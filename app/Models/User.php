@@ -50,4 +50,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(SkinType::class, 'id', 'skin_type_id');
     }
+
+    public function allergens()
+    {
+        return $this->hasMany(Allergen::class);
+    }
+
 }
