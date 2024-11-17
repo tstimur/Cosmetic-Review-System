@@ -45,4 +45,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function skinType()
+    {
+        return $this->hasOne(SkinType::class, 'id', 'skin_type_id');
+    }
+
+    public function allergens()
+    {
+        return $this->hasMany(Allergen::class);
+    }
+
 }
