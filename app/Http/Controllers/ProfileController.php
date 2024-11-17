@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\SkinType;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $request->user()->load('skinType'),
         ]);
     }
 
@@ -57,4 +58,23 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function updateSkinType(Request $request)
+    {
+        $request->validate([
+            'skin_type' => 'required|string|in:dry,oily,combination,sensitive,normal',
+        ]);
+
+        $user = auth()->user();
+
+        // Обновить или создать запись в skin_types
+        $user->skinType()->updateOrCreate(
+            ['user_id' => $user->id],
+            ['type' => $request->input('skin_type')]
+        );
+
+        return redirect()->back()->with('status', 'Тип кожи обновлен.');
+    }
+
+
 }
